@@ -1,11 +1,11 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
-import { SearchApi } from "../modules/search/search.api";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
-import { useGeosQuery } from "../modules/search/use-search-hooks";
+import { useCountriesQuery, useGeosQuery } from "../modules/search/use-search-hooks";
 import { SearchList } from "./SearchList";
 import { type CountriesType, type GeoEntityType, type GeoResponse } from "../modules/search/search.types";
+import { useIsFetching } from "@tanstack/react-query";
+import LineMessage from "../ui/LineMessage";
 
 const SearchForm = () => {
     const [search, setSearch] = useState<string>("");
@@ -14,14 +14,12 @@ const SearchForm = () => {
     const [listOpened, setListOpened] = useState<boolean>(false);
     const [allowGeosQuery, setAllowGeosQuery] = useState<boolean>(false);
     const [showGeos, setShowGeos] = useState<boolean>(true);
+    const [warning, setWarning] = useState<string | null>(null); 
     const searchRef = useRef<HTMLInputElement>(null);
 
-    const {data: countries, isLoading: isLoadingCountries} = useQuery({
-        ...SearchApi.getCountriesQuery(),
-        placeholderData: keepPreviousData 
-    });
-
+    const {countries} = useCountriesQuery();
     const {geos} = useGeosQuery(debounceSearch);
+    const isFetching = useIsFetching();
     
     const data = search && showGeos ? geos : countries;
 
@@ -40,7 +38,7 @@ const SearchForm = () => {
         return () => clearTimeout(timer);
     }, [search]);
 
-    const clickOnInput = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+    const clickOnInput = async (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         console.log(e);
         if (!search) {
             setListOpened(true);
@@ -59,11 +57,16 @@ const SearchForm = () => {
     const sendForm = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(e, choise);
+        if (!choise) {
+            setWarning("Виберiть мiсто або готель зi списку");
+            const timeout = setTimeout(() => setWarning(null), 3000)
+            return () => clearTimeout(timeout); 
+        }
     }
 
     return (
         <form 
-            className="flex flex-col items-center justify-center gap-3 rounded-lg p-5 border border-gray-500 bg-white xl:w-[400px] lg:w-[360px] w-[300px]"
+            className="relative flex flex-col items-center justify-center gap-3 rounded-lg p-5 border border-gray-500 bg-white xl:w-[400px] lg:w-[360px] w-[300px]"
             onSubmit={(e) => sendForm(e)}
         >
             <h2 className="mx-auto text-xl text-black">
@@ -93,7 +96,10 @@ const SearchForm = () => {
                     setAllowGeosQuery={setAllowGeosQuery}
                 />
             }
-            <Button disabled={isLoadingCountries} opacity={isLoadingCountries ? ".5" : "1"}/>
+            <Button disabled={isFetching ? true : false} opacity={isFetching ? ".5" : "1"}/>
+            {warning && 
+                <LineMessage text={warning}/>
+            }
         </form>
     );
 };

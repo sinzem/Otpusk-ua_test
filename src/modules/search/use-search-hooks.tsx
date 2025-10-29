@@ -21,3 +21,25 @@ export function useGeosQuery(search: string) {
         geoPlaceholder,
     };
 }
+
+export function useCountriesQuery() {
+    const {
+        data: countries, 
+        error: countriesErr,
+        isLoading: countriesLoad, 
+        refetch: countriesRefetch,
+        isPlaceholderData: countriesPlaceholder,
+    } = useQuery({
+        ...SearchApi.getCountriesQuery(), 
+        placeholderData: keepPreviousData
+    });
+
+    return {
+        countries,
+        countriesErr,
+        countriesLoad,
+        countriesRefetch,
+        countriesPlaceholder,
+    };
+}
+
