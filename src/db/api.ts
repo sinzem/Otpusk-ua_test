@@ -1,4 +1,4 @@
-const randomInt = (min, max) => {
+const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
@@ -10,7 +10,38 @@ const generateToken = () => {
   });
 };
 
+type Country = { id: string; name: string; flag: string };
+type City    = { id: number; name: string; countryId: string };
+type Hotel   = {
+  id: number;
+  name: string;
+  img: string;
+  cityId: number;
+  cityName: string;
+  countryId: string;
+  countryName: string;
+};
+
+// Колекції у вигляді словників
+type CountriesMap = Record<string, Country>;
+type CitiesMap = Record<string, City>;
+type HotelsMap    = Record<string, Hotel>;
+
+type GeoEntity =
+  | (Country & { type: "country" })
+  | (City    & { type: "city" })
+  | (Hotel   & { type: "hotel" });
+
+type GeoResponse = Record<string, GeoEntity>;
+
+
+
 class DB {
+  countries: CountriesMap;
+  cities: CitiesMap; 
+  hotels: HotelsMap;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  searches: any
   constructor() {
     this.countries = {
       115: {
@@ -103,7 +134,7 @@ class DB {
     return this.cities;
   };
 
-  getHotel = (hotelID) => {
+  getHotel = (hotelID: number) => {
     const [, hotel] =
       Object.entries(this.getHotels()).find(
         ([, hotel]) => hotel.id === hotelID
@@ -130,7 +161,7 @@ class DB {
     return this.hotels;
   };
 
-  getHotelsByCountryID = (countryID) => {
+  getHotelsByCountryID = (countryID: string) => {
     return Object.fromEntries(
       Object.entries(this.getHotels()).filter(
         ([, hotel]) => hotel.countryId === countryID
@@ -138,25 +169,25 @@ class DB {
     );
   };
 
-  addSearch = (token, search) => {
+  addSearch = (token: string, search: Search) => {
     this.searches.set(token, search);
   };
 
-  deleteSearch = (token) => {
+  deleteSearch = (token: string) => {
     this.searches.delete(token);
   };
 
-  hasSearch = (token) => {
+  hasSearch = (token: string) => {
     return this.searches.has(token);
   };
 
-  getSearch = (token) => {
+  getSearch = (token: string) => {
     return this.searches.get(token) ?? null;
   };
 }
 
 class Price {
-  static futureDate(daysFromNow) {
+  static futureDate(daysFromNow: number) {
     const d = new Date();
     d.setDate(d.getDate() + daysFromNow);
     return d.toISOString().split("T")[0];
@@ -179,14 +210,19 @@ class Price {
 }
 
 class Search {
-  constructor(token, params = {}) {
+  _token: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _params: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readyTimestamp: any;
+  constructor(token: string, params = {}) {
     this._token = token;
     this._params = params;
     this.readyTimestamp = this._setReadyTimestamp();
   }
 
   _setReadyTimestamp = () => {
-    const getFutureTimestamp = (offsetSeconds) => {
+    const getFutureTimestamp = (offsetSeconds: number) => {
       const now = Date.now();
       return now + offsetSeconds * 1000;
     };
@@ -197,8 +233,8 @@ class Search {
   get isReady() {
     return Date.now() >= this.readyTimestamp;
   }
-
-  getMockPrices(db) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getMockPrices(db: any) {
     const hotels = db.getHotelsByCountryID(this._params.countryID);
 
     return Object.fromEntries(
@@ -227,14 +263,15 @@ export const getCountries = async () => {
   return Promise.resolve(response);
 };
 
-export const searchGeo = (string) => {
-  const addType = (type) => (entity) => ({ ...entity, type });
+export const searchGeo = (string: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addType = (type: any) => (entity: any) => ({ ...entity, type });
 
   const countries = Object.values(db.getCountries()).map(addType("country"));
   const hotels = Object.values(db.getHotels()).map(addType("hotel"));
   const cities = Object.values(db.getCities()).map(addType("city"));
 
-  let geo = {};
+  const geo: GeoResponse  = {};
 
   switch (string?.length) {
     case 2: {
@@ -286,7 +323,7 @@ export const searchGeo = (string) => {
   return Promise.resolve(response);
 };
 
-export const startSearchPrices = (countryID) => {
+export const startSearchPrices = (countryID: string) => {
   if (!countryID) {
     const error = {
       code: 400,
@@ -305,7 +342,7 @@ export const startSearchPrices = (countryID) => {
 
   const token = generateToken();
   const search = new Search(token, { countryID });
-
+  
   db.addSearch(token, search);
 
   const body = {
@@ -322,7 +359,7 @@ export const startSearchPrices = (countryID) => {
   return Promise.resolve(response);
 };
 
-export const getSearchPrices = (token) => {
+export const getSearchPrices = (token: string) => {
   const search = db.getSearch(token);
 
   if (!search) {
@@ -369,7 +406,7 @@ export const getSearchPrices = (token) => {
   return Promise.resolve(response);
 };
 
-export const stopSearchPrices = (token) => {
+export const stopSearchPrices = (token: string) => {
   if (!token || !db.hasSearch(token)) {
     const error = {
       code: 404,
@@ -401,7 +438,7 @@ export const stopSearchPrices = (token) => {
   return Promise.resolve(response);
 };
 
-export const getHotels = (countryID) => {
+export const getHotels = (countryID: string) => {
   const hotels = db.getHotelsByCountryID(countryID);
 
   const response = new Response(JSON.stringify(hotels), {
@@ -414,7 +451,7 @@ export const getHotels = (countryID) => {
   return Promise.resolve(response);
 };
 
-export const getHotel = (hotelId) => {
+export const getHotel = (hotelId: number) => {
   const hotel = db.getHotel(hotelId);
 
   if (!hotel) {
@@ -440,7 +477,7 @@ export const getHotel = (hotelId) => {
   return Promise.resolve(response);
 };
 
-export const getPrice = (priceId) => {
+export const getPrice = (priceId: string) => {
   if (!priceId) {
     const error = {
       code: 404,
