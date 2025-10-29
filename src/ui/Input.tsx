@@ -28,25 +28,30 @@ const Input = ({
     buttonDisplay?: "flex" | "none";
 })=> {
     return (
-        <>
+        <div style={{width}} className="relative">
             <label style={{margin: labelMargin}} htmlFor={labelName}>    
                 {labelText}
             </label>
             <input 
                 ref={inputRef}
-                className="rounded-lg relative border-1 border-gray-500"
+                className="rounded-lg border border-gray-500"
                 style={{margin, padding, width}}
                 id={id} 
                 type={type} 
                 value={value} 
                 onChange={e => setChange(e.target.value)}
                 placeholder={placeholder}
+                autoCapitalize="off"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
             />
-            <button
-                style={{display: buttonDisplay}}
-                className="absolute top-0 right-0 h-full justify-center align-middle"
-            >X</button>
-        </> 
+            <div
+                onClick={() => setChange("")}
+                style={{display: buttonDisplay, padding}}
+                className="absolute top-0 right-0 cursor-pointer font-bold"
+            >X</div>
+        </div> 
     );
 };
 

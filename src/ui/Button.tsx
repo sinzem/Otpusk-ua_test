@@ -5,8 +5,9 @@ const Button = ({
     colorText = "white",
     padding = "8px 16px",
     margin = "0",
-    width = "fit-content",
+    width = "100%",
     opacity = "1",
+    disabled = false,
 }: {
     type?: "submit" | "reset" | "button" | undefined;
     text?: string;
@@ -16,10 +17,12 @@ const Button = ({
     margin?: string;
     width?: string;
     opacity?: string;
+    disabled?: boolean;
 }) => {
     return (
         <button 
             type={type}
+            disabled={disabled}
             className={`cursor-pointer rounded-lg`}
             style={{ 
                 backgroundColor: colorBg,
@@ -27,7 +30,7 @@ const Button = ({
                 padding,
                 margin,
                 width,
-                opacity
+                opacity,
             }}
         >
             {text}

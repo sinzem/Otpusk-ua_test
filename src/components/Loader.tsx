@@ -8,7 +8,7 @@ const Loader = () => {
 
     if (isLoading) {
         return (
-            <div className="fixed left-15 bottom-10">
+            <div className="fixed left-15 bottom-10 bg-transparent">
                 <img src="/loader.gif" alt="loader" />
             </div>
         );

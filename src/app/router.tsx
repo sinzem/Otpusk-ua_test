@@ -7,7 +7,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-        <div className="container p-5 flex flex-col gap-5">
+        <div className=" p-5 flex flex-col gap-5 bg-amber-50 min-h-[100vh]">
           <Header />
           <Outlet />
           <Footer />
