@@ -10,7 +10,7 @@ export const SearchApi = {
     getCountriesQuery: () => {
         return queryOptions({
             queryKey: ['countries', 'list'],
-            queryFn: ({signal}) => jsonApiInstance<CountriesType, null>({signal, func: getCountries})
+            queryFn: ({signal}) => jsonApiInstance<CountriesType, null>({func: getCountries, signal})
             // queryFn: () => fetch('https://jsonplaceholder.typicode.com/posts').then(res => res.json())
         });
     },
@@ -18,7 +18,11 @@ export const SearchApi = {
     getGeoQuery: (search: string) => {
         return queryOptions({
             queryKey: ['geo', search],
-            queryFn: async ({signal}) => jsonApiInstance<GeoResponse, string>({signal, func: searchGeo, args: search})
+            queryFn: async ({signal}) => jsonApiInstance<GeoResponse, string>({
+                func: (arg?: string) => searchGeo(arg ?? search),
+                signal,
+                args: search
+            })
         });
     },
 };

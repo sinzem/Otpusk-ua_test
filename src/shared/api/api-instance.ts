@@ -7,8 +7,8 @@ class ApiError extends Error {
 }
 
 export const jsonApiInstance = async <T, K>({
-    signal,
     func,
+    signal,
     args
 }: {
     signal: AbortSignal;
