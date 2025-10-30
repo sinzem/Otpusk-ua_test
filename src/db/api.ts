@@ -259,7 +259,7 @@ export const getCountries = async () => {
     },
   });
   // const response = new Error({status: 404, message: "Fatal error"})
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   return Promise.resolve(response);
 };
 

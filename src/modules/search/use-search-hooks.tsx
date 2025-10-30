@@ -1,5 +1,33 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { SearchApi } from './search.api';
+
+export function useSearchPricesQuery({
+    token = "", 
+    queryPermit
+}: {
+    token: string, 
+    queryPermit: boolean
+}) {
+    const { 
+        data: searchPrices, 
+        error: searchPricesErr,
+        isLoading: searchPricesLoad, 
+        refetch: searchPricesRefetch,
+        isPlaceholderData: searchPricesPlaceholder,
+    } = useQuery({
+        ...SearchApi.SearchPricesQuery({token, queryPermit})
+    });
+
+    return { searchPrices, searchPricesErr, searchPricesLoad, searchPricesRefetch, searchPricesPlaceholder };
+}
+
+export function useTokenMutation() {
+    const {mutate: tokenMutate, data: token, isError: tokenError} = useMutation({
+        ...SearchApi.TokenMutation()
+    });
+
+    return { tokenMutate, tokenError, token };
+}
 
 export function useGeosQuery(search: string) {
     const {
@@ -9,7 +37,7 @@ export function useGeosQuery(search: string) {
         refetch: geosRefetch,
         isPlaceholderData: geoPlaceholder,
     } = useQuery({
-        ...SearchApi.getGeoQuery(search), 
+        ...SearchApi.GeoQuery(search), 
         placeholderData: keepPreviousData
     });
 
@@ -30,7 +58,7 @@ export function useCountriesQuery() {
         refetch: countriesRefetch,
         isPlaceholderData: countriesPlaceholder,
     } = useQuery({
-        ...SearchApi.getCountriesQuery(), 
+        ...SearchApi.CountriesQuery(), 
         placeholderData: keepPreviousData
     });
 

@@ -1,3 +1,6 @@
+import { useIsFetching } from "@tanstack/react-query";
+import type { ChangeEvent } from "react";
+
 const Input = ({
     inputRef,
     labelName = "", 
@@ -27,6 +30,20 @@ const Input = ({
     width?: string,
     buttonDisplay?: "flex" | "none";
 })=> {
+
+    const isFetching = useIsFetching();
+
+    const reset = () => {
+        if (!isFetching) {
+            setChange("");
+            if (inputRef && inputRef.current) inputRef.current.focus();
+        }
+    }
+
+    const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
+        if (!isFetching) setChange(e.target.value);
+    }
+
     return (
         <div style={{width}} className="relative">
             <label style={{margin: labelMargin}} htmlFor={labelName}>    
@@ -39,7 +56,7 @@ const Input = ({
                 id={id} 
                 type={type} 
                 value={value} 
-                onChange={e => setChange(e.target.value)}
+                onChange={changeValue}
                 placeholder={placeholder}
                 autoCapitalize="off"
                 autoComplete="off"
@@ -47,8 +64,9 @@ const Input = ({
                 spellCheck="false"
             />
             <div
-                onClick={() => setChange("")}
-                style={{display: buttonDisplay, padding}}
+                data-close="close"
+                onClick={reset}
+                style={{display: buttonDisplay, padding, opacity: `${isFetching ? .5 : 1}`}}
                 className="absolute top-0 right-0 cursor-pointer font-bold"
             >X</div>
         </div> 

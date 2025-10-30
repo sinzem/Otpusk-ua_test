@@ -1,25 +1,36 @@
-import type { CountriesType, CountryType, GeoEntityType, GeoResponse } from "../modules/search/search.types";
+import { useIsFetching } from "@tanstack/react-query";
+import type { CountriesType, CountryType, GeoEntityType, GeoResponseType } from "../modules/search/search.types";
 import { getFlag } from "../shared/utils/getFlag";
 
 const SearchList = ({
     data,
     onClick,
     isOpened,
-    setChoise,
+    setChoice,
     setAllowGeosQuery,
+    warning,
 }: {
-    data: GeoResponse | CountriesType | undefined;
+    data: GeoResponseType | CountriesType | undefined;
     onClick: React.Dispatch<React.SetStateAction<string>>;
     isOpened: React.Dispatch<React.SetStateAction<boolean>>;
-    setChoise: React.Dispatch<React.SetStateAction<GeoEntityType | null>>;
+    setChoice: React.Dispatch<React.SetStateAction<GeoEntityType | null>>;
     setAllowGeosQuery: React.Dispatch<React.SetStateAction<boolean>>;
+    warning: string | null;
 }) => {
 
+    const isFetching = useIsFetching();
+
     const choise = (obj: GeoEntityType | CountryType) => {
-        onClick(obj.name);
-        isOpened(false);
-        setAllowGeosQuery(false);
-        if ("type" in obj && (obj.type === "city" || obj.type === "hotel")) setChoise(obj);
+        if (!isFetching && !warning) {
+            onClick(obj.name);
+            isOpened(false);
+            setAllowGeosQuery(false);
+            if ("type" in obj && (obj.type === "city" || obj.type === "hotel")) {
+                setChoice(obj);
+            } else {
+                setChoice(null);
+            };
+        }
     }
  
     return (

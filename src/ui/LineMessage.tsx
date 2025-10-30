@@ -7,7 +7,7 @@ const LineMessage = ({
 }) => {
     return (
         <div 
-            className="absolute py-5 px-6 flex justify-center items-center rounded-lg border border-gray-500 max-w-[90%] text-black"
+            className="absolute py-5 px-6 flex justify-center items-center rounded-lg border border-gray-500 max-w-[90%] text-black animate-opacity"
             style={{backgroundColor: colorBg}}
         >
             {text} 
@@ -15,4 +15,4 @@ const LineMessage = ({
     );
 };
 
-export default LineMessage;
+export { LineMessage };

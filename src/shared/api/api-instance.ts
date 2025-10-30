@@ -8,10 +8,10 @@ class ApiError extends Error {
 
 export const jsonApiInstance = async <T, K>({
     func,
+    args,
     signal,
-    args
 }: {
-    signal: AbortSignal;
+    signal?: AbortSignal;
     args?: K;
     func: (args?: K) => Promise<Response>;
 }): Promise<T> => {
@@ -38,6 +38,36 @@ function abort() {
 //     func: () => Promise<Response>,
 // ): Promise<T> => {
 //     const result = await func();
+
+//     if (!result.ok) {
+//         throw new ApiError(result);
+//     }
+
+//     const data = (await result.json()) as Promise<T>;
+
+//     return data;
+// };
+
+// fetch_and_headers=========================================
+// export const jsonApiInstance = async <T>(
+//     url: string,
+//     init?: RequestInit & { json?: unknown },
+// ) => {
+//     let headers = init?.headers ?? {};
+
+//     if (init?.json) {
+//         headers = {
+//             'Content-Type': 'application/json',
+//             ...headers,
+//         };
+
+//         init.body = JSON.stringify(init.json);
+//     }
+
+//     const result = await fetch(`${BASE_URL}${url}`, {
+//         ...init,
+//         headers,
+//     });
 
 //     if (!result.ok) {
 //         throw new ApiError(result);
