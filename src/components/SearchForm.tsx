@@ -56,7 +56,7 @@ const SearchForm = () => {
             // setChoice(null);
             setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
             setSearch("");
-            showWarning("Дані успiшно отримані", setWarning, 2000);
+            showWarning("Дані успiшно отримані (поки що в консолi)", setWarning, 2000);
             if (searchRef.current) searchRef.current.focus(); 
             console.log(searchPrices);
         }
