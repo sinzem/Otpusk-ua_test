@@ -1,10 +1,10 @@
-import { SearchForm } from "../components/SearchForm";
+import { SearchVidget } from "../components/SearchVidget";
 
 const MainPage = () => {
   
     return (
         <div className="flex flex-col"> 
-            <SearchForm />
+            <SearchVidget />
         </div>
     )
 }

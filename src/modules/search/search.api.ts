@@ -23,7 +23,8 @@ export const SearchApi = {
                 func: (arg?: string) => searchGeo(arg ?? search),
                 signal,
                 args: search
-            })
+            }),
+            enabled: !!search
             // queryFn: (meta) => jsonApiInstance<CountriesType>(url, {signal: meta.signal}) /* (fetch) */
         });
     },
@@ -46,7 +47,7 @@ export const SearchApi = {
         queryPermit: boolean;
     }) => {
         return queryOptions({
-            queryKey: ['searchPrices', token],
+            queryKey: ['searchPrices', /* token */],
             queryFn: async ({signal}) => jsonApiInstance<GetSearchPricesResponseType, string>({
                 func: (arg?: string) => getSearchPrices(arg ?? token),
                 signal,

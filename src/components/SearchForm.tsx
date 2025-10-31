@@ -10,7 +10,7 @@ import { useCountriesQuery, useGeosQuery, useSearchPricesQuery, useTokenMutation
 
 const SearchForm = () => {
     const [search, setSearch] = useState<string>("");
-    const [choice, setChoice] = useState<GeoEntityType | null>(null);
+    const [choice, setChoice] = useState<GeoEntityType | null>(null); 
     const [debounceSearch, setDebounceSearch] = useState<string>("");
     const [listOpened, setListOpened] = useState<boolean>(false);
     const [allowGeosQuery, setAllowGeosQuery] = useState<boolean>(false);
@@ -53,10 +53,12 @@ const SearchForm = () => {
 
     useEffect(() => {
         if (searchPrices) {
-            setChoice(null);
+            // setChoice(null);
             setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
             setSearch("");
             showWarning("Дані успiшно отримані", setWarning, 2000);
+            if (searchRef.current) searchRef.current.focus(); 
+            console.log(searchPrices);
         }
     }, [searchPrices]);
 
@@ -134,10 +136,10 @@ const SearchForm = () => {
         };
     }
 
-    
+
     return (
         <form 
-            className="relative flex flex-col items-center justify-center gap-3 rounded-lg p-5 border border-gray-500 bg-white xl:w-[400px] lg:w-[360px] w-[300px]"
+            className="relative flex flex-col items-center justify-center gap-3 rounded-lg p-5 border border-gray-500 bg-white w-full"
             onSubmit={(e) => sendForm(e)}
         >
             <h2 className="mx-auto text-xl text-black">
