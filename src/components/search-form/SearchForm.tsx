@@ -1,12 +1,13 @@
+import styles from "./SearchForm.module.css";
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { SearchList } from "./SearchList";
+import { Button } from "../../ui/button/Button";
+import { Input } from "../../ui/input/Input";
+import { SearchList } from "../search-list/SearchList";
 import { useIsFetching } from "@tanstack/react-query";
-import { LineMessage } from "../ui/LineMessage";
-import { showWarning } from "../shared/utils/showWarning";
-import { type CountriesType, type GeoEntityType, type GeoResponseType, type SearchPricesPermitType } from "../modules/search/search.types";
-import { useCountriesQuery, useGeosQuery, useSearchPricesQuery, useTokenMutation } from "../modules/search/use-search-hooks";
+import { LineMessage } from "../../ui/message/LineMessage";
+import { showWarning } from "../../shared/utils/showWarning";
+import { type CountriesType, type GeoEntityType, type GeoResponseType, type SearchPricesPermitType } from "../../modules/search/search.types";
+import { useCountriesQuery, useGeosQuery, useSearchPricesQuery, useTokenMutation } from "../../modules/search/use-search-hooks";
 
 const SearchForm = () => {
     const [search, setSearch] = useState<string>("");
@@ -15,7 +16,7 @@ const SearchForm = () => {
     const [listOpened, setListOpened] = useState<boolean>(false);
     const [allowGeosQuery, setAllowGeosQuery] = useState<boolean>(false);
     const [showGeos, setShowGeos] = useState<boolean>(true);
-    const [warning, setWarning] = useState<string | null>(null); 
+    const [warning, setWarning] = useState<{text: string, time: number} | null>(null); 
     const searchRef = useRef<HTMLInputElement>(null);
     const [searchPricesPermit, setSearchPricesPermit] = useState<SearchPricesPermitType>({
         requestAllowed: false,
@@ -35,6 +36,7 @@ const SearchForm = () => {
     const data = search && showGeos ? geos : countries;
  
     useEffect(() => {
+        setSearch("");
         if (searchRef.current) searchRef.current.focus(); 
     }, []);
 
@@ -52,21 +54,21 @@ const SearchForm = () => {
     }, [search]);
 
     useEffect(() => {
-        if (searchPrices) {
-            // setChoice(null);
+        if (searchPrices && choice) {
+            setChoice(null);
             setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
             setSearch("");
-            showWarning("Дані успiшно отримані (поки що в консолi)", setWarning, 2000);
+            showWarning({text: "Дані успiшно отримані (поки що в консолi)", time: 2500}, setWarning);
             if (searchRef.current) searchRef.current.focus(); 
             console.log(searchPrices);
         }
     }, [searchPrices]);
-
+   
     useEffect(() => {
         if (!searchPricesErr) return;
         if ("status" in searchPricesErr && searchPricesErr.status === 425) {
             if (searchPricesPermit.requests < 2) {
-                showWarning("Пошук даних", setWarning, searchPricesPermit.delay);
+                showWarning({text: "Пошук даних", time: searchPricesPermit.delay}, setWarning);
 
                 setTimeout(() => {
                     setSearchPricesPermit({requestAllowed: true, requests: searchPricesPermit.requests + 1, delay: searchPricesPermit.delay});
@@ -75,11 +77,11 @@ const SearchForm = () => {
                 }, searchPricesPermit.delay);
             } else {
                 setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
-                showWarning("Перевищено допустиму кiлькiсть запитiв, спробуйте ще", setWarning, 2000);
+                showWarning({text: "Перевищено допустиму кiлькiсть запитiв, спробуйте ще", time: 2000}, setWarning);
             }
         } else {
             setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
-            showWarning("Cталася помилка, спробуйте ще раз", setWarning, 2000);
+            showWarning({text: "Cталася помилка, спробуйте ще раз", time: 2500}, setWarning);
         }
     }, [searchPricesErr]);
 
@@ -88,7 +90,7 @@ const SearchForm = () => {
             const wait = token.waitUntil ?? Date.now();
             const delay = Date.now() - new Date(wait).getTime();
             
-            showWarning("Пошук даних", setWarning, delay);
+            showWarning({text: "Пошук даних", time: delay}, setWarning);
 
             setTimeout(() => {
                 setSearchPricesPermit({requestAllowed: true, requests: searchPricesPermit.requests + 1, delay});
@@ -126,7 +128,7 @@ const SearchForm = () => {
         if (warning || isFetching) return;
 
         if (!choice) {
-            showWarning("Виберiть мiсто або готель зi списку", setWarning, 2000);
+            showWarning({text: "Виберiть мiсто або готель зi списку", time: 2500}, setWarning);
             return;
         };
         
@@ -139,15 +141,15 @@ const SearchForm = () => {
 
     return (
         <form 
-            className="relative flex flex-col items-center justify-center gap-3 rounded-lg p-5 border border-gray-500 bg-white w-full"
+            className={styles.form}
             onSubmit={(e) => sendForm(e)}
         >
-            <h2 className="mx-auto text-xl text-black">
+            <h2 className={styles.title}>
                 Форма пошуку турiв
             </h2>
             <div
                 onClick={(e) => clickOnInput(e)}
-                className="w-full"
+                className={styles.inp_wrapper}
             >
                 <Input 
                     width="100%"
@@ -175,7 +177,7 @@ const SearchForm = () => {
                 opacity={isFetching || warning ? ".5" : "1"}
             />
             {warning && 
-                <LineMessage text={warning}/>
+                <LineMessage data={warning}/>
             }
         </form>
     );

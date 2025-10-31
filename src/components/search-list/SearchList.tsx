@@ -1,6 +1,7 @@
+import styles from "./SearchList.module.css";
 import { useIsFetching } from "@tanstack/react-query";
-import type { CountriesType, CountryType, GeoEntityType, GeoResponseType } from "../modules/search/search.types";
-import { getFlag } from "../shared/utils/getFlag";
+import type { CountriesType, CountryType, GeoEntityType, GeoResponseType } from "../../modules/search/search.types";
+import { getFlag } from "../../shared/utils/getFlag";
 
 const SearchList = ({
     data,
@@ -15,7 +16,7 @@ const SearchList = ({
     isOpened: React.Dispatch<React.SetStateAction<boolean>>;
     setChoice: React.Dispatch<React.SetStateAction<GeoEntityType | null>>;
     setAllowGeosQuery: React.Dispatch<React.SetStateAction<boolean>>;
-    warning: string | null;
+    warning: {text: string, time: number} | null;
 }) => {
 
     const isFetching = useIsFetching();
@@ -34,17 +35,17 @@ const SearchList = ({
     }
  
     return (
-        <ul className="w-full flex flex-col gap-3 rounded-lg border border-gray-500 p-4">
+        <ul className={styles.list}>
             {data && Object.keys(data).length === 0 && 
                 <li>Немає даних...</li>
             }
             {data && typeof data !== "undefined" && Object.values(data).map(obj => (
                 <li 
                     key={obj.id} 
-                    className="flex items-center gap-3 cursor-pointer"
+                    className={styles.item}
                     onClick={() => choise(obj)}
                 >
-                    <img className="h-4" src={!obj.type ? obj.flag : getFlag(obj)} alt="flag" />
+                    <img className={styles.img} src={!obj.type ? obj.flag : getFlag(obj)} alt="flag" />
                     {obj.name}
                 </li>
             ))}

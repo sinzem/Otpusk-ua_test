@@ -1,13 +1,13 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { Loader } from "../components/Loader";
+import { Header } from "../components/header/Header";
+import { Footer } from "../components/footer/Footer";
+import { Loader } from "../components/loader/Loader";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-        <div className=" p-5 flex flex-col gap-5 bg-amber-50 min-h-[100vh]">
+        <div className="main">
           <Header />
           <Outlet />
           <Footer />
@@ -18,21 +18,21 @@ export const router = createBrowserRouter([
       {
         path: "/",
         lazy: () =>
-          import("../pages/main-page").then((comp) => ({
+          import("../pages/main/main-page").then((comp) => ({
             Component: comp.MainPage,
           })),
       },
       {
         path: "about",
         lazy: () =>
-          import("../pages/about-page").then((comp) => ({
+          import("../pages/about/about-page").then((comp) => ({
             Component: comp.AboutPage,
           })),
       },
       {
         path: "*",
         lazy: () =>
-          import("../pages/not-found-page").then((comp) => ({
+          import("../pages/not-found/not-found-page").then((comp) => ({
             Component: comp.NotFoundPage,
           })),
       },

@@ -1,5 +1,6 @@
+import styles from "./HotelList.module.css";
 import { useQueryClient } from "@tanstack/react-query";
-import { HotelCard } from "./HotelCard";
+import { HotelCard } from "../hotel-card/HotelCard";
 import { useEffect } from "react";
 
 const HotelList = () => {
@@ -12,7 +13,7 @@ const HotelList = () => {
     }, [prices])
     console.log(prices)
     return (
-        <div className="relative flex flex-wrap gap-3 rounded-lg p-5 border border-gray-500 bg-white w-full">
+        <div className={styles.list}>
             <HotelCard />
             <HotelCard />
         </div>

@@ -1,0 +1,25 @@
+.header {
+    padding: 20px 50px;
+}
+
+.navigation {
+    display: flex;
+    gap: 24px;
+}
+
+.path {
+    padding: 8px 20px;
+    border: 1px solid var(--color-gray);
+    border-radius: 8px;
+    background-color: var(--color-white);
+    transition: all .2s ease;
+}
+
+.path:hover {
+    box-shadow: 2px 2px 5px rgba(0,0,0, .5);
+}
+
+.path:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 4px rgba(0,0,0, .5);
+}

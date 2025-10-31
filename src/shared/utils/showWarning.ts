@@ -1,9 +1,8 @@
 export const showWarning = (
-    message: string, 
-    setter: React.Dispatch<React.SetStateAction<string | null>>,
-    time: number
+    data: {text: string, time: number}, 
+    setter: React.Dispatch<React.SetStateAction<{text: string, time: number} | null>>,
 ) => {
-    setter(message);
-    const timeout = setTimeout(() => setter(null), time)
+    setter({text: data.text, time: data.time});
+    const timeout = setTimeout(() => setter(null), data.time)
     return () => clearTimeout(timeout); 
 } 

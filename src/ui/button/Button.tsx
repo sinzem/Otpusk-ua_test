@@ -1,9 +1,11 @@
+import styles from "./Button.module.css";
+
 const Button = ({
     type = "submit",
     text = "Знайти",
-    colorBg = "blue",
+    colorBg = "var(--color-blue)",
     colorText = "white",
-    padding = "8px 16px",
+    padding = "12px 16px",
     margin = "0",
     width = "100%",
     opacity = "1",
@@ -23,7 +25,7 @@ const Button = ({
         <button 
             type={type}
             disabled={disabled}
-            className={`cursor-pointer rounded-lg`}
+            className={styles.btn}
             style={{ 
                 backgroundColor: colorBg,
                 color: colorText,

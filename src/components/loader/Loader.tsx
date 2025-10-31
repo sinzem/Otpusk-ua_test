@@ -1,3 +1,4 @@
+import styles from "./Loader.module.css";
 import { useIsFetching } from "@tanstack/react-query";
 import { useIsMutating } from '@tanstack/react-query'
 
@@ -8,8 +9,8 @@ const Loader = () => {
 
     if (isLoading) {
         return (
-            <div className="fixed left-15 bottom-10 bg-transparent">
-                <img src="/loader.gif" alt="loader" />
+            <div className={styles.loader}>
+                <img src="/img/loader.gif" alt="loader" />
             </div>
         );
     }

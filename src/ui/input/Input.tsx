@@ -1,5 +1,6 @@
 import { useIsFetching } from "@tanstack/react-query";
 import type { ChangeEvent } from "react";
+import styles from "./Input.module.css";
 
 const Input = ({
     inputRef,
@@ -11,7 +12,7 @@ const Input = ({
     value, 
     setChange, 
     placeholder = "",
-    padding = "8px 16px",
+    padding = "12px 16px",
     margin = "0",
     width = "100%",
     buttonDisplay = "flex", 
@@ -45,13 +46,13 @@ const Input = ({
     }
 
     return (
-        <div style={{width}} className="relative">
+        <div style={{width}} className={styles.wrapper}>
             <label style={{margin: labelMargin}} htmlFor={labelName}>    
                 {labelText}
             </label>
             <input 
                 ref={inputRef}
-                className="rounded-lg border border-gray-500"
+                className={styles.inp}
                 style={{margin, padding, width}}
                 id={id} 
                 type={type} 
@@ -66,9 +67,16 @@ const Input = ({
             <div
                 data-close="close"
                 onClick={reset}
-                style={{display: buttonDisplay, padding, opacity: `${isFetching ? .5 : 1}`}}
-                className="absolute top-0 right-0 cursor-pointer font-bold"
-            >X</div>
+                style={{
+                    display: buttonDisplay, 
+                    padding, 
+                    opacity: `${isFetching ? ".5" : "1"}`,
+                    cursor: `${isFetching ? "auto" : "pointer"}`
+                }}
+                className={styles.close}
+            >
+                <img src="/img/close_flaticon_com.png" alt="close" />
+            </div>
         </div> 
     );
 };

@@ -12,13 +12,13 @@ export function useSearchPricesQuery({
         data: searchPrices, 
         error: searchPricesErr,
         isLoading: searchPricesLoad, 
+        isSuccess: searcPricesSuccess,
         refetch: searchPricesRefetch,
-        isPlaceholderData: searchPricesPlaceholder,
     } = useQuery({
         ...SearchApi.SearchPricesQuery({token, queryPermit})
     });
 
-    return { searchPrices, searchPricesErr, searchPricesLoad, searchPricesRefetch, searchPricesPlaceholder };
+    return { searchPrices, searchPricesErr, searchPricesLoad, searchPricesRefetch, searcPricesSuccess };
 }
 
 export function useTokenMutation() {

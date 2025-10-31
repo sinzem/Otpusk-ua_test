@@ -1,6 +1,67 @@
-@import "tailwindcss";
+*{padding: 0; margin: 0; border: 0;}
+*,*:before,*::after{-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;}
+:focus,:active{outline: none;}
+a:focus,a:active{outline: none;}
+nav,footer,header,aside{display: block;}
+html,body{height: 100%; width: 100%; font-size: 100%; line-height: 1; font-size: 14px; -ms-text-size-adjust: 100%; -moz-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;}
+input,button,textarea{font-family: inherit;}
+input::-ms-clear{display: none;}
+button{cursor: pointer;}
+button::-moz-focus-inner{padding: 0; border: 0;}
+a,a:visited{text-decoration: none;}
+a:hover{text-decoration: none;}
+ul li{list-style: none;}
+img{vertical-align: top;}
+h1,h2,h3,h4,h5,h6{font-size: inherit; font-weight: 400;}
 
-@theme {
-  --animate-opacity: opacity .3s ease-in-out forwards;
-  @keyframes opacity {0% {opacity: 0} 100% {opacity: 1}}
+@font-face {
+    font-family: actay;
+    src: url('/fonts/Actay-Regular.otf') format('woff2');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: actay;
+    src: url('/fonts/ActayWide-Bold.otf') format('woff2');
+    font-weight: 700;
+}
+
+:root {
+    --color-black: rgb(0, 0, 0);
+    --color-white: rgb(255, 255, 255);
+    --color-gray: rgb(128, 128, 128);
+    --color-blue: rgb(13, 133, 255);
+    --color-bg: rgb(237, 237, 238);
+}
+
+html, body {
+    font-family: actay;
+    font-size: 16px;
+    font-weight: 400;
+    scroll-behavior: smooth;
+    color: var(--color-black);
+    background-color: var(--color-bg);
+}
+
+a {
+    color: var(--color-black);
+}
+
+button {
+    color: var(--color-white);
+    background-color: var(--color-blue);
+}
+
+.main {
+    min-height: 100.1vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+}
+
+.page {
+    flex-grow: 1;
+    padding: 0 50px;
 }
