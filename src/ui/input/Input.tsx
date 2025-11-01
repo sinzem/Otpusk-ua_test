@@ -53,7 +53,7 @@ const Input = ({
             <input 
                 ref={inputRef}
                 className={styles.inp}
-                style={{margin, padding, width}}
+                style={{margin, padding, width, cursor: value ? "pointer" : "auto"}}
                 id={id} 
                 type={type} 
                 value={value} 
@@ -75,7 +75,7 @@ const Input = ({
                 }}
                 className={styles.close}
             >
-                <img src="/img/close_flaticon_com.png" alt="close" />
+                <img data-close="close" src="/img/close_flaticon_com.png" alt="close" />
             </div>
         </div> 
     );

@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getCountries, getSearchPrices, searchGeo, startSearchPrices } from '../../db/api.ts';
+import { getCountries, getHotels, getSearchPrices, searchGeo, startSearchPrices } from '../../db/api.ts';
 import { jsonApiInstance } from '../../shared/api/api-instance.ts';
-import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, StartSearchResponseType } from './search.types.ts';
+import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, HotelsType, StartSearchResponseType } from './search.types.ts';
 
 
 
@@ -54,6 +54,24 @@ export const SearchApi = {
                 args: token
             }),
             enabled: !!token && queryPermit
+        });
+    },
+
+    GetHotelsQuery: ({
+        countryId = "",
+        permit, 
+    }: {
+        countryId: string;
+        permit: boolean;
+    }) => {
+        return queryOptions({
+            queryKey: ['getHotels', countryId],
+            queryFn: async ({signal}) => jsonApiInstance<HotelsType, string>({
+                func: (arg?: string) => getHotels(arg ?? countryId),
+                signal,
+                args: countryId
+            }),
+            enabled: !!countryId && permit
         });
     },
 }; 

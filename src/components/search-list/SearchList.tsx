@@ -2,6 +2,7 @@ import styles from "./SearchList.module.css";
 import { useIsFetching } from "@tanstack/react-query";
 import type { CountriesType, CountryType, GeoEntityType, GeoResponseType } from "../../modules/search/search.types";
 import { getFlag } from "../../shared/utils/getFlag";
+import { useSearchStore } from "../../modules/search/search.store";
 
 const SearchList = ({
     data,
@@ -19,6 +20,7 @@ const SearchList = ({
     warning: {text: string, time: number} | null;
 }) => {
 
+    const { setCountryId } = useSearchStore();
     const isFetching = useIsFetching();
 
     const choise = (obj: GeoEntityType | CountryType) => {
@@ -28,6 +30,7 @@ const SearchList = ({
             setAllowGeosQuery(false);
             if ("type" in obj && (obj.type === "city" || obj.type === "hotel")) {
                 setChoice(obj);
+                setCountryId(obj.countryId)
             } else {
                 setChoice(null);
             };

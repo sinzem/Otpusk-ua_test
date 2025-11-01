@@ -1,15 +1,19 @@
 import styles from "./SearchForm.module.css";
-import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { Button } from "../../ui/button/Button";
 import { Input } from "../../ui/input/Input";
 import { SearchList } from "../search-list/SearchList";
-import { useIsFetching } from "@tanstack/react-query";
+import { useIsFetching, useQuery } from "@tanstack/react-query";
 import { LineMessage } from "../../ui/message/LineMessage";
 import { showWarning } from "../../shared/utils/showWarning";
-import { type CountriesType, type GeoEntityType, type GeoResponseType, type SearchPricesPermitType } from "../../modules/search/search.types";
-import { useCountriesQuery, useGeosQuery, useSearchPricesQuery, useTokenMutation } from "../../modules/search/use-search-hooks";
+import { type CountriesType, type GeoEntityType, type GeoResponseType } from "../../modules/search/search.types";
+import { useCountriesQuery, useGeosQuery, /* useSearchPricesQuery, */ useTokenMutation } from "../../modules/search/use-search-hooks";
+import { useSearchStore } from "../../modules/search/search.store";
+import { SearchApi } from "../../modules/search/search.api";
 
 const SearchForm = () => {
+    const searchRef = useRef<HTMLInputElement>(null);
+
     const [search, setSearch] = useState<string>("");
     const [choice, setChoice] = useState<GeoEntityType | null>(null); 
     const [debounceSearch, setDebounceSearch] = useState<string>("");
@@ -17,18 +21,20 @@ const SearchForm = () => {
     const [allowGeosQuery, setAllowGeosQuery] = useState<boolean>(false);
     const [showGeos, setShowGeos] = useState<boolean>(true);
     const [warning, setWarning] = useState<{text: string, time: number} | null>(null); 
-    const searchRef = useRef<HTMLInputElement>(null);
-    const [searchPricesPermit, setSearchPricesPermit] = useState<SearchPricesPermitType>({
-        requestAllowed: false,
-        requests: 0,
-        delay: 0,
-    }); 
+    const [searchPricesRequests, setSearchPricesRequests] = useState<number>(0);
+    const [searchPricesDelay, setSearchPricesDelay] = useState<number>(0);
+    const {/* countryId, */ searchPricesPermit, setSearchPricesPermit} = useSearchStore();
 
     const {countries} = useCountriesQuery();
     const {geos} = useGeosQuery(debounceSearch);
     const {token, tokenMutate} = useTokenMutation();
-    const {searchPrices, searchPricesRefetch, searchPricesErr} = useSearchPricesQuery({
-        token: token?.token || "", queryPermit: searchPricesPermit.requestAllowed
+
+    const { 
+        data: searchPrices, 
+        error: searchPricesErr,
+        refetch: searchPricesRefetch,
+    } = useQuery({
+        ...SearchApi.SearchPricesQuery({token: token?.token ?? "", queryPermit: searchPricesPermit}),
     });
 
     const isFetching = useIsFetching();
@@ -36,7 +42,6 @@ const SearchForm = () => {
     const data = search && showGeos ? geos : countries;
  
     useEffect(() => {
-        setSearch("");
         if (searchRef.current) searchRef.current.focus(); 
     }, []);
 
@@ -49,80 +54,89 @@ const SearchForm = () => {
         if (search) setListOpened(true);
         setShowGeos(true);
         setChoice(null);
-        setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
+        setSearchPricesPermit(false);
         return () => clearTimeout(timer);
     }, [search]);
 
     useEffect(() => {
         if (searchPrices && choice) {
             setChoice(null);
-            setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
             setSearch("");
-            showWarning({text: "Дані успiшно отримані (поки що в консолi)", time: 2500}, setWarning);
+            showWarning({text: "Дані успiшно отримані.", time: 2500}, setWarning);
             if (searchRef.current) searchRef.current.focus(); 
-            console.log(searchPrices);
         }
     }, [searchPrices]);
    
     useEffect(() => {
         if (!searchPricesErr) return;
         if ("status" in searchPricesErr && searchPricesErr.status === 425) {
-            if (searchPricesPermit.requests < 2) {
-                showWarning({text: "Пошук даних", time: searchPricesPermit.delay}, setWarning);
+            if (searchPricesRequests < 2) {
+                showWarning({text: "Пошук даних", time: searchPricesDelay}, setWarning);
 
                 setTimeout(() => {
-                    setSearchPricesPermit({requestAllowed: true, requests: searchPricesPermit.requests + 1, delay: searchPricesPermit.delay});
+                    setSearchPricesPermit(true);
+                    setSearchPricesRequests(prev => prev + 1);
                     searchPricesRefetch();
                     setWarning(null);
-                }, searchPricesPermit.delay);
+                }, searchPricesDelay);
             } else {
-                setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
-                showWarning({text: "Перевищено допустиму кiлькiсть запитiв, спробуйте ще", time: 2000}, setWarning);
+                setSearchPricesPermit(false);
+                setSearchPricesRequests(0);
+                showWarning({text: "Перевищено допустиму кiлькiсть запитiв, спробуйте ще", time: 2500}, setWarning);
             }
         } else {
-            setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
+            setSearchPricesPermit(false);
+            setSearchPricesRequests(0);
             showWarning({text: "Cталася помилка, спробуйте ще раз", time: 2500}, setWarning);
         }
     }, [searchPricesErr]);
 
     useEffect(() => {
-        if (token && searchPricesPermit.requests < 2) {
+        if (token && searchPricesRequests < 3) {
             const wait = token.waitUntil ?? Date.now();
             const delay = Date.now() - new Date(wait).getTime();
             
             showWarning({text: "Пошук даних", time: delay}, setWarning);
 
             setTimeout(() => {
-                setSearchPricesPermit({requestAllowed: true, requests: searchPricesPermit.requests + 1, delay});
+                setSearchPricesPermit(true);
+                setSearchPricesRequests(prev => prev + 1);
+                setSearchPricesDelay(delay);
                 searchPricesRefetch();
                 setWarning(null);
             }, delay);
         }
     }, [token]);
 
-    const clickOnInput = async (e: MouseEvent<HTMLDivElement>) => {
-         const target = e.target as HTMLElement | null;
+    const clickOnInput = useCallback((e: MouseEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLElement | null;
         if (target && target.dataset && (target.dataset.close === "close" || Object.values(target.dataset).includes("close"))) return;
 
         if (warning || isFetching) return;
-
-        setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
+            setSearchPricesPermit(false);
+            setSearchPricesRequests(0);
         if (!search) {
             setListOpened(true);
             setChoice(null);
             return;
         } else {
             if (choice) {
-                if ("countryId" in choice) tokenMutate(choice.countryId);
+                if ("countryId" in choice) {
+                    // if (choice.countryId === countryId) {
+                    //     showWarning({text: "Дані цієї країни вже у вікні інформації", time: 2500}, setWarning);
+                    //     return;
+                    // }
+                    tokenMutate(choice.countryId);
+                }
             } else {
                 setShowGeos(false);
                 setListOpened(true);
                 return;
             }
         }
-    }
+    }, [warning, isFetching, search, choice, tokenMutate, setSearchPricesPermit]);
 
-    const sendForm = async (e: FormEvent<HTMLFormElement>) => {
+    const sendForm = useCallback((e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (warning || isFetching) return;
@@ -133,11 +147,15 @@ const SearchForm = () => {
         };
         
         if (choice && "countryId" in choice) {
-            setSearchPricesPermit({requestAllowed: false, requests: 0, delay: 0});
+            // if (choice.countryId === countryId) {
+            //     showWarning({text: "Дані цієї країни вже у вікні інформації", time: 2500}, setWarning);
+            //     return;
+            // }
+            setSearchPricesPermit(false);
+            setSearchPricesRequests(0);
             tokenMutate(choice.countryId);
         };
-    }
-
+    }, [warning, isFetching, choice, tokenMutate, setSearchPricesPermit]);
 
     return (
         <form 

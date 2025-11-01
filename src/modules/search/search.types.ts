@@ -1,5 +1,5 @@
 export type CountryType = { id: string; name: string; flag: string };
-export type CityType    = { id: number; name: string };
+export type CityType    = { id: number; name: string; countryId: string}; /* (!!!не хватало countryId!!!) */
 export type HotelType   = {
   id: number;
   name: string;
@@ -36,6 +36,8 @@ export type PriceOfferType = {
 
 export type PricesMapType = Record<string, PriceOfferType>;
 
+export type HotelPriceType = Omit<HotelType, "id"> & PriceOfferType;
+
 export type GetSearchPricesResponseType = {
   prices: PricesMapType;
 };
@@ -45,3 +47,4 @@ export type SearchPricesPermitType = {
   requests: number;
   delay: number;
 }
+
