@@ -30,6 +30,7 @@ h1,h2,h3,h4,h5,h6{font-size: inherit; font-weight: 400;}
     --color-black: rgb(0, 0, 0);
     --color-white: rgb(255, 255, 255);
     --color-gray: rgb(128, 128, 128);
+    --color-gray-light: rgb(218, 216, 216);
     --color-blue: rgb(13, 133, 255);
     --color-bg: rgb(237, 237, 238);
 }

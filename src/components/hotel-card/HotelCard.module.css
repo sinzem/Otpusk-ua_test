@@ -27,7 +27,7 @@
 
 .img img {
     width: 100%;
-    transition: all .3s ease;
+    transition: all 1s ease;
 }
 .img img:hover {
     transform: scale(1.1);

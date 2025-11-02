@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type MouseEve
 import { Button } from "../../ui/button/Button";
 import { Input } from "../../ui/input/Input";
 import { SearchList } from "../search-list/SearchList";
-import { useIsFetching, useQuery } from "@tanstack/react-query";
+import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LineMessage } from "../../ui/message/LineMessage";
 import { showWarning } from "../../shared/utils/showWarning";
 import { type CountriesType, type GeoEntityType, type GeoResponseType } from "../../modules/search/search.types";
@@ -12,6 +12,8 @@ import { useSearchStore } from "../../modules/search/search.store";
 import { SearchApi } from "../../modules/search/search.api";
 
 const SearchForm = () => {
+    const queryClient = useQueryClient();
+
     const searchRef = useRef<HTMLInputElement>(null);
 
     const [search, setSearch] = useState<string>("");
@@ -161,6 +163,10 @@ const SearchForm = () => {
         };
     }, [warning, isFetching, choice, tokenMutate, setSearchPricesPermit]);
 
+    const handleCancel = () => {
+        queryClient.cancelQueries({})
+    }
+
     return (
         <form 
             className={styles.form}
@@ -200,9 +206,13 @@ const SearchForm = () => {
                     opacity={isFetching || warning ? ".5" : "1"}
                 />
             </div>
-            
             {warning && 
                 <LineMessage data={warning}/>
+            }
+            {isFetching ? 
+                (<div className={styles.cancel} onClick={handleCancel}>
+                    Скасувати запит
+                </div>) : null
             }
         </form>
     );
