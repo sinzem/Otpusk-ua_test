@@ -1,25 +1,35 @@
 import { create } from "zustand";
+import type { HotelPriceType } from "./search.types";
 
 interface SearchStore {
     token: string;
+    tokenPrev: string;
     countryId: string;
     searchPricesPermit: boolean;
-    // hotels: HotelPriceType[];
+    cache: Map<string, HotelPriceType[]>
+    hotels: HotelPriceType[];
 
     setToken: (token: string) => void;
+    setTokenPrev: (tokenPrev: string) => void;
     setCountryId: (countryId: string) => void;
     setSearchPricesPermit: (searchPricesPermit: boolean) => void;
-    // setHotels: (hotels: HotelPriceType[]) => void;
+    setCache: (key: string, value: HotelPriceType[]) => void;
+    setHotels: (hotels: HotelPriceType[]) => void;
 }
 
 export const useSearchStore = create<SearchStore>((set) => ({
     token: "",
+    tokenPrev: "",
     countryId: "",
     searchPricesPermit: false,
+    cache: new Map(),
     hotels: [],
 
     setToken: (token) => {
         set(() => ({token}));
+    },
+    setTokenPrev: (tokenPrev) => {
+        set(() => ({tokenPrev}));
     },
     setCountryId: (countryId) => {
         set(() => ({countryId}));
@@ -27,7 +37,10 @@ export const useSearchStore = create<SearchStore>((set) => ({
     setSearchPricesPermit: (searchPricesPermit) => {
         set(() => ({searchPricesPermit}));
     },
-    // setHotels: (hotels) => {
-    //     set(() => ({hotels}));
-    // },
+    setCache: (key, value) =>
+        set((state) => ({cache: new Map(state.cache).set(key, value)})
+    ),
+    setHotels: (hotels) => {
+        set(() => ({hotels}));
+    },
 }))

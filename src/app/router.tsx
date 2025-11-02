@@ -23,6 +23,13 @@ export const router = createBrowserRouter([
           })),
       },
       {
+        path: "hotel/:id",
+        lazy: () =>
+          import("../pages/hotel/hotel-page").then((comp) => ({
+            Component: comp.HotelPage,
+          })),
+      },
+      {
         path: "about",
         lazy: () =>
           import("../pages/about/about-page").then((comp) => ({

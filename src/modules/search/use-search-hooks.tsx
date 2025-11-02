@@ -2,6 +2,44 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { SearchApi } from './search.api';
 import { useSearchStore } from './search.store';
 
+export function useGetPriceQuery({
+    priceId,
+}: {
+    priceId: string;
+}) {
+     const { 
+        data: dataPrice, 
+        error: dataPriceErr,
+        isLoading: dataPriceLoad, 
+        isSuccess: dataPriceSuccess,
+        refetch: dataPriceRefetch,
+    } = useQuery({
+        ...SearchApi.GetPriceQuery({priceId}),
+        enabled: !!priceId
+    });
+
+    return { dataPrice, dataPriceErr, dataPriceLoad, dataPriceSuccess, dataPriceRefetch };
+}
+
+export function useGetHotelQuery({
+    hotelId,
+}: {
+    hotelId: number;
+}) {
+     const { 
+        data: dataHotel, 
+        error: dataHotelErr,
+        isLoading: dataHotelLoad, 
+        isSuccess: dataHotelSuccess,
+        refetch: dataHotelRefetch,
+    } = useQuery({
+        ...SearchApi.GetHotelQuery({hotelId}),
+        enabled: !!hotelId
+    });
+
+    return { dataHotel, dataHotelErr, dataHotelLoad, dataHotelSuccess, dataHotelRefetch };
+}
+
 export function useGetHotelsQuery({
     countryId = "",
     permit 

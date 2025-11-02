@@ -1,5 +1,7 @@
 .header {
-    padding: 20px 50px;
+    padding: 20px 0;
+    margin: 0 auto;
+    width: 1440px;
 }
 
 .navigation {
@@ -22,4 +24,10 @@
 .path:active {
     transform: translateY(1px);
     box-shadow: 1px 1px 4px rgba(0,0,0, .5);
+}
+
+@media (max-width: 1599px) {
+    .header {
+        width: 90%;
+    }
 }

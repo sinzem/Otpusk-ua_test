@@ -1,11 +1,13 @@
 .form {
-    width: 100%;
-    padding: 16px; 
+    /* max-width: 484px;
+    min-width: 484px; */
+    width: 484px;
+    min-height: 407px;
+    padding: 25px; 
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 12px;
     border: 1px solid var(--color-gray);
     border-radius: 12px;
@@ -19,4 +21,24 @@
 .inp_wrapper {
     width: 100%;
 }
+
+.btn_wrapper {
+    width: 100%;
+}
+
+@media (max-width: 1399px) {
+    .form {
+        width: 100%;
+    }
+    .btn_wrapper {
+        margin-top: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .form {
+        min-height: 362px;
+    }
+}
+
   

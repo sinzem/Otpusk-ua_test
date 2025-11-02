@@ -23,7 +23,7 @@ const SearchForm = () => {
     const [warning, setWarning] = useState<{text: string, time: number} | null>(null); 
     const [searchPricesRequests, setSearchPricesRequests] = useState<number>(0);
     const [searchPricesDelay, setSearchPricesDelay] = useState<number>(0);
-    const {/* countryId, */ searchPricesPermit, setSearchPricesPermit} = useSearchStore();
+    const {/* countryId, */cache, setHotels, searchPricesPermit, setSearchPricesPermit} = useSearchStore();
 
     const {countries} = useCountriesQuery();
     const {geos} = useGeosQuery(debounceSearch);
@@ -62,7 +62,7 @@ const SearchForm = () => {
         if (searchPrices && choice) {
             setChoice(null);
             setSearch("");
-            showWarning({text: "Дані успiшно отримані.", time: 2500}, setWarning);
+            showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
             if (searchRef.current) searchRef.current.focus(); 
         }
     }, [searchPrices]);
@@ -122,10 +122,12 @@ const SearchForm = () => {
         } else {
             if (choice) {
                 if ("countryId" in choice) {
-                    // if (choice.countryId === countryId) {
-                    //     showWarning({text: "Дані цієї країни вже у вікні інформації", time: 2500}, setWarning);
-                    //     return;
-                    // }
+                    if (cache.has(choice.countryId)) {
+                        const hotels = cache.get(choice.countryId);
+                        if (hotels) setHotels(hotels);
+                        showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
+                        return;
+                    } 
                     tokenMutate(choice.countryId);
                 }
             } else {
@@ -147,10 +149,12 @@ const SearchForm = () => {
         };
         
         if (choice && "countryId" in choice) {
-            // if (choice.countryId === countryId) {
-            //     showWarning({text: "Дані цієї країни вже у вікні інформації", time: 2500}, setWarning);
-            //     return;
-            // }
+            if (cache.has(choice.countryId)) {
+                const hotels = cache.get(choice.countryId);
+                if (hotels) setHotels(hotels);
+                showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
+                return;
+            } 
             setSearchPricesPermit(false);
             setSearchPricesRequests(0);
             tokenMutate(choice.countryId);
@@ -175,7 +179,7 @@ const SearchForm = () => {
                     type="text" 
                     value={search} 
                     setChange={setSearch} 
-                    placeholder="Введiть назву країни, мiста чи готелю" 
+                    placeholder="Введiть назву мiста чи готелю" 
                     inputRef={searchRef}
                     buttonDisplay={search.length ? "flex" : "none"}
                 />
@@ -190,10 +194,13 @@ const SearchForm = () => {
                     warning={warning}
                 />
             }
-            <Button 
-                disabled={isFetching || warning ? true : false} 
-                opacity={isFetching || warning ? ".5" : "1"}
-            />
+            <div className={styles.btn_wrapper}>
+                <Button 
+                    disabled={isFetching || warning ? true : false} 
+                    opacity={isFetching || warning ? ".5" : "1"}
+                />
+            </div>
+            
             {warning && 
                 <LineMessage data={warning}/>
             }

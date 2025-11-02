@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getCountries, getHotels, getSearchPrices, searchGeo, startSearchPrices } from '../../db/api.ts';
+import { getCountries, getHotel, getHotels, getPrice, getSearchPrices, searchGeo, startSearchPrices } from '../../db/api.ts';
 import { jsonApiInstance } from '../../shared/api/api-instance.ts';
-import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, HotelsType, StartSearchResponseType } from './search.types.ts';
+import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, HotelsType, HotelType, PriceOfferType, StartSearchResponseType } from './search.types.ts';
 
 
 
@@ -72,6 +72,38 @@ export const SearchApi = {
                 args: countryId
             }),
             enabled: !!countryId && permit
+        });
+    },
+
+    GetHotelQuery: ({
+        hotelId,
+    }: {
+        hotelId: number;
+    }) => {
+        return queryOptions({
+            queryKey: ['getHotel', hotelId],
+            queryFn: async ({signal}) => jsonApiInstance<HotelType, number>({
+                func: (arg?: number) => getHotel(arg ?? hotelId),
+                signal,
+                args: hotelId
+            }),
+            enabled: !!hotelId 
+        });
+    },
+    
+    GetPriceQuery: ({
+        priceId,
+    }: {
+        priceId: string;
+    }) => {
+        return queryOptions({
+            queryKey: ['getPrice', priceId],
+            queryFn: async ({signal}) => jsonApiInstance<PriceOfferType, string>({
+                func: (arg?: string) => getPrice(arg ?? priceId),
+                signal,
+                args: priceId
+            }),
+            enabled: !!priceId 
         });
     },
 }; 

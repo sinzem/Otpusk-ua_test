@@ -28,3 +28,9 @@
 .close img {
     height: 50%;
 }
+
+@media (max-width: 767px) {
+    .inp::placeholder {
+        font-size: 14px;
+    }
+}
