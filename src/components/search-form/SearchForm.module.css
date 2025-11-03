@@ -50,9 +50,9 @@
     .form {
         width: 100%;
     }
-    .btn_wrapper {
+    /* .btn_wrapper {
         margin-top: auto;
-    }
+    } */
 }
 
 @media (max-width: 767px) {

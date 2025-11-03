@@ -23,8 +23,6 @@ const HotelInfo = () => {
         ? countries[dataHotel.countryId].flag 
         : "/img/location_Freepik_flaticon_com.png";
 
-    console.log(dataHotel, dataPrice);
-
     if (!dataHotel || !dataPrice || !id || !hotelId || !priceId) return <div>Помилка пошуку даних готелю</div>;
     if (!Object.keys(dataHotel).length  || !Object.keys(dataPrice).length) return <div>Помилка пошуку даних готелю</div>;
 
