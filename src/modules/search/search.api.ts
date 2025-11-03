@@ -25,18 +25,17 @@ export const SearchApi = {
                 args: search
             }),
             enabled: !!search
-            // queryFn: (meta) => jsonApiInstance<CountriesType>(url, {signal: meta.signal}) /* (fetch) */
         });
     },
 
     TokenMutation: () => {
-            return {
-                mutationFn: async (countryId: string) => 
-                jsonApiInstance<StartSearchResponseType, string>({
-                    func: (arg?: string) => startSearchPrices(arg ?? countryId),
-                    args: countryId
-                })
-            }
+        return {
+            mutationFn: async (countryId: string) => 
+            jsonApiInstance<StartSearchResponseType, string>({
+                func: (arg?: string) => startSearchPrices(arg ?? countryId),
+                args: countryId
+            })
+        }
     },
 
     SearchPricesQuery: ({

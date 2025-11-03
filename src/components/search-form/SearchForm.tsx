@@ -41,7 +41,7 @@ const SearchForm = () => {
 
     const isFetching = useIsFetching();
 
-    const data = search && showGeos ? geos : countries;
+    const optionsList = search && showGeos ? geos : countries;
  
     useEffect(() => {
         if (searchRef.current) searchRef.current.focus(); 
@@ -77,7 +77,7 @@ const SearchForm = () => {
     useEffect(() => {
         if (!searchPricesErr) return;
         if ("status" in searchPricesErr && searchPricesErr.status === 425) {
-            if (searchPricesRequests < 2) {
+            if (searchPricesRequests < 3) {
                 showWarning({text: "Пошук даних", time: searchPricesDelay}, setWarning);
 
                 setTimeout(() => {
@@ -120,8 +120,9 @@ const SearchForm = () => {
         if (target && target.dataset && (target.dataset.close === "close" || Object.values(target.dataset).includes("close"))) return;
 
         if (warning || isFetching) return;
-            setSearchPricesPermit(false);
-            setSearchPricesRequests(0);
+
+        setSearchPricesPermit(false);
+        setSearchPricesRequests(0);
         if (!search) {
             setListOpened(true);
             setChoice(null);
@@ -149,18 +150,16 @@ const SearchForm = () => {
                 return;
             }
         }
-    }, [warning, isFetching, search, choice, tokenMutate, setSearchPricesPermit]);
+    }, [warning, isFetching, search, choice]);
 
     const sendForm = useCallback((e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (warning || isFetching) return;
-
+    
         if (!choice) {
             showWarning({text: "Виберiть країну, мiсто або готель зi списку", time: 2500}, setWarning);
             return;
         };
-        
+    
         if (choice && "countryId" in choice) {
             if (cache.has(choice.countryId)) {
                 const hotels = cache.get(choice.countryId);
@@ -174,7 +173,7 @@ const SearchForm = () => {
             setSearchPricesRequests(0);
             tokenMutate(choice.countryId);
         };
-    }, [warning, isFetching, choice, tokenMutate, setSearchPricesPermit]);
+    }, [choice]);
 
     const handleCancel = () => {
         queryClient.cancelQueries({})
@@ -203,9 +202,9 @@ const SearchForm = () => {
                     buttonDisplay={search.length ? "flex" : "none"}
                 />
             </div>
-            {listOpened && data as GeoResponseType | CountriesType && 
+            {listOpened && optionsList as GeoResponseType | CountriesType && 
                 <SearchList 
-                    data={data}
+                    data={optionsList}
                     onClick={setSearch} 
                     isOpened={setListOpened}
                     setChoice={setChoice}

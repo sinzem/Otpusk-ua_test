@@ -32,7 +32,7 @@ const SearchList = ({
                 setChoice(obj);
                 setCountryId(obj.countryId)
             } else {
-                const newObj = {...obj, countryId: obj.id, type: "country"} as CountryIdType;
+                const newObj = {...obj, countryId: obj.id, type: "country"} satisfies CountryIdType;
                 setChoice(newObj);
                 setCountryId(newObj.countryId)
             };
