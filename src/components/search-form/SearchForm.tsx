@@ -6,8 +6,8 @@ import { SearchList } from "../search-list/SearchList";
 import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LineMessage } from "../../ui/message/LineMessage";
 import { showWarning } from "../../shared/utils/showWarning";
-import { type CountriesType, type GeoEntityType, type GeoResponseType } from "../../modules/search/search.types";
-import { useCountriesQuery, useGeosQuery, /* useSearchPricesQuery, */ useTokenMutation } from "../../modules/search/use-search-hooks";
+import { type CountriesType, type CountryIdType, type GeoEntityType, type GeoResponseType } from "../../modules/search/search.types";
+import { useCountriesQuery, useGeosQuery, useTokenMutation } from "../../modules/search/use-search-hooks";
 import { useSearchStore } from "../../modules/search/search.store";
 import { SearchApi } from "../../modules/search/search.api";
 
@@ -17,7 +17,7 @@ const SearchForm = () => {
     const searchRef = useRef<HTMLInputElement>(null);
 
     const [search, setSearch] = useState<string>("");
-    const [choice, setChoice] = useState<GeoEntityType | null>(null); 
+    const [choice, setChoice] = useState<GeoEntityType | CountryIdType | null>(null); 
     const [debounceSearch, setDebounceSearch] = useState<string>("");
     const [listOpened, setListOpened] = useState<boolean>(false);
     const [allowGeosQuery, setAllowGeosQuery] = useState<boolean>(false);
@@ -25,7 +25,7 @@ const SearchForm = () => {
     const [warning, setWarning] = useState<{text: string, time: number} | null>(null); 
     const [searchPricesRequests, setSearchPricesRequests] = useState<number>(0);
     const [searchPricesDelay, setSearchPricesDelay] = useState<number>(0);
-    const {/* countryId, */cache, setHotels, searchPricesPermit, setSearchPricesPermit} = useSearchStore();
+    const {cache, hotels, setHotels, searchPricesPermit, setSearchPricesPermit} = useSearchStore();
 
     const {countries} = useCountriesQuery();
     const {geos} = useGeosQuery(debounceSearch);
@@ -64,10 +64,15 @@ const SearchForm = () => {
         if (searchPrices && choice) {
             setChoice(null);
             setSearch("");
-            showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
             if (searchRef.current) searchRef.current.focus(); 
         }
     }, [searchPrices]);
+
+    useEffect(() => {
+        if (!token) return;
+        const text = hotels && hotels.length ? "Дані успiшно отримані." : "Немає даних";
+        showWarning({text, time: 2200}, setWarning);
+    }, [hotels, token]);
    
     useEffect(() => {
         if (!searchPricesErr) return;
@@ -123,14 +128,20 @@ const SearchForm = () => {
             return;
         } else {
             if (choice) {
-                if ("countryId" in choice) {
+                if ("countryId" in choice && choice.type !== "country") {
                     if (cache.has(choice.countryId)) {
                         const hotels = cache.get(choice.countryId);
                         if (hotels) setHotels(hotels);
-                        showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
+                        const text = hotels && hotels.length ? "Дані успiшно отримані." : "Немає даних";
+                        showWarning({text, time: 2200}, setWarning);
+                        setSearch("");
                         return;
                     } 
                     tokenMutate(choice.countryId);
+                } else {
+                    setShowGeos(false);
+                    setListOpened(true);
+                    return;
                 }
             } else {
                 setShowGeos(false);
@@ -146,7 +157,7 @@ const SearchForm = () => {
         if (warning || isFetching) return;
 
         if (!choice) {
-            showWarning({text: "Виберiть мiсто або готель зi списку", time: 2500}, setWarning);
+            showWarning({text: "Виберiть країну, мiсто або готель зi списку", time: 2500}, setWarning);
             return;
         };
         
@@ -154,7 +165,9 @@ const SearchForm = () => {
             if (cache.has(choice.countryId)) {
                 const hotels = cache.get(choice.countryId);
                 if (hotels) setHotels(hotels);
-                showWarning({text: "Дані успiшно отримані.", time: 2200}, setWarning);
+                const text = hotels && hotels.length ? "Дані успiшно отримані." : "Немає даних";
+                showWarning({text, time: 2200}, setWarning);
+                setSearch("");
                 return;
             } 
             setSearchPricesPermit(false);

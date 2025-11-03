@@ -1,4 +1,5 @@
 export type CountryType = { id: string; name: string; flag: string };
+export type CountryIdType = CountryType & {countryId: string, type: "country"};
 export type CityType    = { id: number; name: string; countryId: string}; /* (!!!не хватало countryId!!!) */
 export type HotelType   = {
   id: number;

@@ -1,6 +1,6 @@
 import styles from "./SearchList.module.css";
 import { useIsFetching } from "@tanstack/react-query";
-import type { CountriesType, CountryType, GeoEntityType, GeoResponseType } from "../../modules/search/search.types";
+import type { CountriesType, CountryIdType, CountryType, GeoEntityType, GeoResponseType } from "../../modules/search/search.types";
 import { getFlag } from "../../shared/utils/getFlag";
 import { useSearchStore } from "../../modules/search/search.store";
 
@@ -15,7 +15,7 @@ const SearchList = ({
     data: GeoResponseType | CountriesType | undefined;
     onClick: React.Dispatch<React.SetStateAction<string>>;
     isOpened: React.Dispatch<React.SetStateAction<boolean>>;
-    setChoice: React.Dispatch<React.SetStateAction<GeoEntityType | null>>;
+    setChoice: React.Dispatch<React.SetStateAction<GeoEntityType | CountryIdType | null>>;
     setAllowGeosQuery: React.Dispatch<React.SetStateAction<boolean>>;
     warning: {text: string, time: number} | null;
 }) => {
@@ -32,7 +32,9 @@ const SearchList = ({
                 setChoice(obj);
                 setCountryId(obj.countryId)
             } else {
-                setChoice(null);
+                const newObj = {...obj, countryId: obj.id, type: "country"} as CountryIdType;
+                setChoice(newObj);
+                setCountryId(newObj.countryId)
             };
         }
     }
