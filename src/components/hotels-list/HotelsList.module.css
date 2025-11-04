@@ -1,5 +1,6 @@
 .list {
     width: 100%;
+    min-height: 412px;
     max-width: 860px;
     padding: 25px;
     display: flex;

@@ -40,21 +40,24 @@ const SearchList = ({
     }
  
     return (
-        <ul className={styles.list}>
-            {data && Object.keys(data).length === 0 && 
-                <li>Немає даних...</li>
-            }
-            {data && typeof data !== "undefined" && Object.values(data).map(obj => (
-                <li 
-                    key={obj.id} 
-                    className={styles.item}
-                    onClick={() => choise(obj)}
-                >
-                    <img className={styles.img} src={!obj.type ? obj.flag : getFlag(obj)} alt="flag" />
-                    {obj.name}
-                </li>
-            ))}
-        </ul>
+        <div className={styles.list_wrapper}>
+            <ul className={styles.list}>
+                {data && Object.keys(data).length === 0 && 
+                    <li>Немає даних...</li>
+                }
+                {data && typeof data !== "undefined" && Object.values(data).map(obj => (
+                    <li 
+                        key={obj.id} 
+                        className={styles.item}
+                        onClick={() => choise(obj)}
+                    >
+                        <img className={styles.img} src={!obj.type ? obj.flag : getFlag(obj)} alt="flag" />
+                        {obj.name}
+                    </li>
+                ))}
+            </ul>
+        </div>
+       
     );
 };
 

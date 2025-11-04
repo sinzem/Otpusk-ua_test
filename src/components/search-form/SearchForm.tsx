@@ -102,7 +102,7 @@ const SearchForm = () => {
         if (token && searchPricesRequests < 3) {
             const wait = token.waitUntil ?? Date.now();
             const delay = Date.now() - new Date(wait).getTime();
-            // const delay = new Date(wait).getTime() - Date.now();
+          
             showWarning({text: "Пошук даних", time: delay}, setWarning);
 
             setTimeout(() => {
@@ -179,10 +179,15 @@ const SearchForm = () => {
         queryClient.cancelQueries();
     }
 
+    const hideList = () => {
+        if (listOpened) setListOpened(false);
+    }
+
     return (
         <form 
             className={styles.form}
             onSubmit={(e) => sendForm(e)}
+            onClick={hideList}
         >
             <h2 className={styles.title}>
                 Форма пошуку турiв
