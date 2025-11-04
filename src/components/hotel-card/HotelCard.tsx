@@ -1,11 +1,10 @@
 import styles from "./HotelCard.module.css";
 import type { HotelPriceType } from "../../modules/search/search.types";
 import { useCountriesQuery } from "../../modules/search/use-search-hooks";
-import { useState, type MouseEvent } from "react";
+import { memo, useState, type MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-const HotelCard = ({
+const HotelCard = memo(({
     data
 }: {
     data: HotelPriceType
@@ -21,13 +20,13 @@ const HotelCard = ({
     const hotelCardClick = (e: MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement | null;
         if (target && target.dataset && target.dataset.price) return;
-
+        
         if ("hotelID" in data && typeof data.hotelID === "string") {
             const id = `/hotel/${data.hotelID}_${data.id}`
             navigate(id, {relative: "path"})
         }
     }
-
+    console.log(data.hotelID);
     return (
         <div className={styles.card} 
             onClick={(e) => hotelCardClick(e)}
@@ -64,6 +63,6 @@ const HotelCard = ({
             </div>
         </div>
     );
-};
+});
 
 export { HotelCard };

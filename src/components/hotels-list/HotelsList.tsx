@@ -2,7 +2,7 @@ import styles from "./HotelsList.module.css";
 import { HotelCard } from "../hotel-card/HotelCard";
 import { useGetHotelsQuery, useSearchPricesQuery } from "../../modules/search/use-search-hooks";
 import { useSearchStore } from "../../modules/search/search.store";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type { HotelPriceType } from "../../modules/search/search.types";
 
 
@@ -29,7 +29,9 @@ const HotelsList = () => {
         setHotels(hotelsList);
         setCache(countryId, hotelsList);
     }, [searchPrices])
-  
+
+    const memoHotels = useMemo(() => hotels, [hotels]);
+
     if (searchHotelsErr || searchPricesErr) {return <div className={styles.list}>Помилка отримання данних. Спробуйте ще раз.</div>}
 
     return (
@@ -37,8 +39,8 @@ const HotelsList = () => {
             {!hotels.length &&
                     <h2 style={{marginLeft: "16px"}}>No data...</h2>
             }
-            {hotels.length > 0 && 
-                hotels.map(hotel => (
+            {memoHotels.length > 0 && 
+                memoHotels.map(hotel => (
                     <div key={hotel.id}>
                         <HotelCard data={hotel} />
                     </div>
