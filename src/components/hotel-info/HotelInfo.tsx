@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import styles from "./HotelInfo.module.css";
 import { useCountriesQuery, useGetHotelQuery, useGetPriceQuery } from "../../modules/search/use-search-hooks";
 import { useState } from "react";
+import { getServiceData } from "../../shared/utils/getServiceData";
 
 const HotelInfo = () => {
     const [priceVisibility, setPriceVisibility] = useState(false);
@@ -48,29 +49,21 @@ const HotelInfo = () => {
             </div>
             <div className={styles.description}>
                 <h3>Опис</h3>
-                <p>Комфортабельний готель з видом на море, пропонує вiдмiнний сервiс та широкий спектр зручностей</p>
+                <p>{dataHotel.description}</p>
             </div>
             <div className={styles.services}>
                 <h3>Сервiси</h3>
                 <div className={styles.services_line}>
-                    <div className={styles.service}>
-                        <div className={styles.flag}>
-                            <img src="/img/wifi_freepick_flaticon_com.png" alt="wi-fi" />
-                        </div>
-                        <h3>WI-FI</h3>
-                    </div>
-                    <div className={styles.service}>
-                        <div className={styles.flag}>
-                            <img src="/img/pool_freepick_flaticon_com.png" alt="wi-fi" />
-                        </div>
-                        <h3>Басейн</h3>
-                    </div>
-                    <div className={styles.service}>
-                        <div className={styles.flag}>
-                            <img src="/img/cutlery_freepick_flaticon_com.png" alt="wi-fi" />
-                        </div>
-                        <h3>Харчування</h3>
-                    </div>
+                    {dataHotel.services && Object.entries(dataHotel.services).map((service, i) => (
+                        service[1] === "yes" 
+                            ? <div className={styles.service} key={"service" + i}>
+                                <div className={styles.flag}>
+                                    <img src={getServiceData({str: service[0]})[0]} alt={service[0]} />
+                                </div>
+                                <h3>{getServiceData({str: service[0]})[1]}</h3>
+                            </div>
+                            : null
+                    ))}
                 </div>
             </div>
             <div className={styles.date}>

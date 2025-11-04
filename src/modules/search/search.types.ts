@@ -11,6 +11,11 @@ export type HotelType   = {
   countryName: string;
 };
 
+export type HotelInfoType = HotelType & {
+  description: string,
+  services: Record<string, "none" | "yes">
+}
+
 export type CountriesType = Record<string, CountryType>;
 export type HotelsType    = Record<string, HotelType>;
 

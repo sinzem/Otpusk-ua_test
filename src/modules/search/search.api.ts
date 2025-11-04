@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getCountries, getHotel, getHotels, getPrice, getSearchPrices, searchGeo, startSearchPrices } from '../../db/api.ts';
 import { jsonApiInstance } from '../../shared/api/api-instance.ts';
-import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, HotelsType, HotelType, PriceOfferType, StartSearchResponseType } from './search.types.ts';
+import type { CountriesType, GeoResponseType, GetSearchPricesResponseType, HotelInfoType, HotelsType, PriceOfferType, StartSearchResponseType } from './search.types.ts';
 
 
 
@@ -81,7 +81,7 @@ export const SearchApi = {
     }) => {
         return queryOptions({
             queryKey: ['getHotel', hotelId],
-            queryFn: async ({signal}) => jsonApiInstance<HotelType, number>({
+            queryFn: async ({signal}) => jsonApiInstance<HotelInfoType, number>({
                 func: (arg?: number) => getHotel(arg ?? hotelId),
                 signal,
                 args: hotelId
