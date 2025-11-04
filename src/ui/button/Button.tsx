@@ -10,6 +10,9 @@ const Button = ({
     width = "100%",
     opacity = "1",
     disabled = false,
+    additionalClass = "",
+    func,
+    args = [],
 }: {
     type?: "submit" | "reset" | "button" | undefined;
     text?: string;
@@ -20,12 +23,19 @@ const Button = ({
     width?: string;
     opacity?: string;
     disabled?: boolean;
+    additionalClass?: "appearance" | "";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    func?: (...args: any[]) => void | Promise<void>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    args?: any[];
 }) => {
+
+
     return (
         <button 
             type={type}
             disabled={disabled}
-            className={styles.btn}
+            className={`${styles.btn} ${additionalClass}`}
             style={{ 
                 backgroundColor: colorBg,
                 color: colorText,
@@ -34,6 +44,7 @@ const Button = ({
                 width,
                 opacity,
             }}
+            onClick={() => func?.(...(args || []))}
         >
             {text}
         </button>

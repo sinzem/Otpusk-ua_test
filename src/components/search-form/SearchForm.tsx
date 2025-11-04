@@ -176,7 +176,7 @@ const SearchForm = () => {
     }, [choice]);
 
     const handleCancel = () => {
-        queryClient.cancelQueries({})
+        queryClient.cancelQueries();
     }
 
     return (
@@ -221,11 +221,24 @@ const SearchForm = () => {
             {warning && 
                 <LineMessage data={warning}/>
             }
-            {isFetching ? 
+            {/* {isFetching ? 
                 (<div className={styles.cancel} onClick={handleCancel}>
                     Скасувати запит
                 </div>) : null
-            }
+            } */}
+            {isFetching 
+                ? <Button 
+                    text="Скасувати запит" 
+                    margin="auto 0 0 auto" 
+                    width="fit-content" 
+                    colorBg="var(--color-gray-light)" 
+                    colorText="var(--color-black)"
+                    type="reset" 
+                    additionalClass="appearance"
+                    func={handleCancel}
+                />
+                : null
+            }  
         </form>
     );
 };

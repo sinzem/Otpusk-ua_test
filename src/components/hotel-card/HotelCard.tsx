@@ -26,7 +26,7 @@ const HotelCard = memo(({
             navigate(id, {relative: "path"})
         }
     }
-    console.log(data.hotelID);
+    
     return (
         <div className={styles.card} 
             onClick={(e) => hotelCardClick(e)}

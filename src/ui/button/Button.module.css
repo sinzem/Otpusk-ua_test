@@ -7,6 +7,7 @@
 
 .btn:disabled {
     cursor: auto;
+    opacity: .5;
 }
 
 .btn:disabled.btn:hover {
@@ -21,3 +22,12 @@
     transform: translateY(1px);
     box-shadow: 1px 1px 4px rgba(0,0,0, .5);
 }
+
+.appearance {
+    animation: appear .3s ease forwards;
+}
+
+@keyframes appear {
+    0% {opacity: 0;} 100%{opacity: 1;}
+}
+
