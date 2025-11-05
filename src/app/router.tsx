@@ -1,19 +1,11 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import { Header } from "../components/header/Header";
-import { Footer } from "../components/footer/Footer";
-import { Loader } from "../components/loader/Loader";
+import { createBrowserRouter } from "react-router-dom";
+import { Layout } from "./layout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-        <div className="main">
-          <Header />
-          <Outlet />
-          <Footer />
-          <Loader /> 
-        </div>
-    ),
+    element: <Layout />
+  ,
     children: [
       {
         path: "/",

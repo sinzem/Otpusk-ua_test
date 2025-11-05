@@ -101,9 +101,12 @@
 
 .services_line {
     margin-top: 10px;
-    display: flex;
+    /* display: flex;
     flex-wrap: wrap;
-    row-gap: 12px;
+    row-gap: 12px; */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
     column-gap: 20px;
 }
 
@@ -198,6 +201,9 @@
     }
     .services {
         padding-top: 20px;
+    }
+    .services_line {
+        grid-template-columns: repeat(2, 1fr);
     }
     .date {
         padding-top: 20px;
