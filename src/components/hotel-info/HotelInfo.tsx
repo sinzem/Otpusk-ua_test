@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import styles from "./HotelInfo.module.css";
 import { useCountriesQuery, useGetHotelQuery, useGetPriceQuery } from "../../modules/search/use-search-hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getServiceData } from "../../shared/utils/getServiceData";
+import { headTitle } from "../../app/router";
 
 const HotelInfo = () => {
     const [priceVisibility, setPriceVisibility] = useState(false);
@@ -23,6 +24,10 @@ const HotelInfo = () => {
         && countries[dataHotel.countryId] 
         ? countries[dataHotel.countryId].flag 
         : "/img/location_Freepik_flaticon_com.png";
+
+    useEffect(() => {
+        if (dataHotel) document.title = `${headTitle} | ${dataHotel.name}`; 
+    }, [id, dataHotel])
 
     if (!dataHotel || !dataPrice || !id || !hotelId || !priceId) return <div>Помилка пошуку даних готелю</div>;
     if (!Object.keys(dataHotel).length  || !Object.keys(dataPrice).length) return <div>Помилка пошуку даних готелю</div>;
