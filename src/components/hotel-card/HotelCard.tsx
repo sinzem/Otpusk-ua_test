@@ -5,9 +5,11 @@ import { memo, useState, type MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 const HotelCard = memo(({
-    data
+    data,
+    appearDelay = 0,
 }: {
-    data: HotelPriceType
+    data: HotelPriceType,
+    appearDelay?: number;
 }) => {
 
     const navigate = useNavigate();
@@ -29,6 +31,7 @@ const HotelCard = memo(({
     
     return (
         <div className={styles.card} 
+            style={{animationDelay: `${appearDelay}s`}}
             onClick={(e) => hotelCardClick(e)}
         >
             <div className={styles.img}>

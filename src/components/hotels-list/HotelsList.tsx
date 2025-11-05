@@ -40,9 +40,9 @@ const HotelsList = () => {
                     <h2 style={{marginLeft: "16px"}}>No data...</h2>
             }
             {memoHotels.length > 0 && 
-                memoHotels.map(hotel => (
+                memoHotels.map((hotel, i) => (
                     <div key={hotel.id}>
-                        <HotelCard data={hotel} />
+                        <HotelCard data={hotel} appearDelay={i / 5}/>
                     </div>
                 ))
             }
